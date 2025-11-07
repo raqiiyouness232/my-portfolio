@@ -1,0 +1,13 @@
+# robots.txt for https://younesrq.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /files/
+
+# Sitemap
+Sitemap: https://younesrq.com/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
