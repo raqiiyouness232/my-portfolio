@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Sidebar from "@/components/sidebar"
 import Hero from "@/components/hero"
 import Container from "@/components/Container"
@@ -16,6 +16,29 @@ import { useLanguage } from "@/contexts/LanguageContext"
 export default function Home() {
   const [activeSection, setActiveSection] = useState("about")
   const { language, t } = useLanguage()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = ["about", "projects", "experience", "education", "contact"]
+      const scrollPosition = window.scrollY + 200
+
+      for (const sectionId of sections) {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          const { offsetTop, offsetHeight } = element
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(sectionId)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    handleScroll() // Call once on mount
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
     <div className="flex min-h-screen bg-transparent text-white">
