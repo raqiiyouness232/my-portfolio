@@ -55,6 +55,7 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
 
     return (
       <motion.button
+        key={item.id}
         onClick={() => handleNavClick(item.id)}
         className={`w-full text-left px-4 py-3.5 rounded-xl transition-all duration-300 relative overflow-hidden group ${
           isActive
@@ -69,7 +70,9 @@ export default function Sidebar({ activeSection, setActiveSection }: SidebarProp
           delay: index * 0.05,
           type: "spring", 
           stiffness: 300, 
-          damping: 25 
+          damping: 25,
+          opacity: { duration: 0.3 },
+          x: { duration: 0.3 }
         }}
       >
         {!isActive && (

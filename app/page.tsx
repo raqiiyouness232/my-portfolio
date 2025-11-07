@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Sidebar from "@/components/sidebar"
 import Hero from "@/components/hero"
 import Container from "@/components/Container"
@@ -16,25 +16,37 @@ import { useLanguage } from "@/contexts/LanguageContext"
 export default function Home() {
   const [activeSection, setActiveSection] = useState("about")
   const { language, t } = useLanguage()
+  const previousSection = useRef("about")
 
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ["about", "projects", "experience", "education", "contact"]
-      const scrollPosition = window.scrollY + 200
+    let ticking = false
 
-      for (const sectionId of sections) {
-        const element = document.getElementById(sectionId)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(sectionId)
-            break
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sections = ["about", "projects", "experience", "education", "contact"]
+          const scrollPosition = window.scrollY + 200
+
+          for (const sectionId of sections) {
+            const element = document.getElementById(sectionId)
+            if (element) {
+              const { offsetTop, offsetHeight } = element
+              if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                if (previousSection.current !== sectionId) {
+                  previousSection.current = sectionId
+                  setActiveSection(sectionId)
+                }
+                break
+              }
+            }
           }
-        }
+          ticking = false
+        })
+        ticking = true
       }
     }
 
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll() // Call once on mount
 
     return () => window.removeEventListener("scroll", handleScroll)
